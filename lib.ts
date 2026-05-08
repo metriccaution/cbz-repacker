@@ -26,25 +26,33 @@ export async function repackage(
       }
 
       zipFile.on("entry", async (entry) => {
-        if (entry.fileName.endsWith("/")) {
-          zipFile.readEntry();
-          return;
-        }
-
-        zipFile.openReadStream(entry, (err, readStream) => {
-          if (err) {
-            zipFile.close();
-            outputZip.end();
-            return reject(err);
+        try {
+          if (entry.fileName.endsWith("/")) {
+            zipFile.readEntry();
+            return;
           }
 
-          outputZip.addReadStream(
-            readStream.pipe(sharp().jpeg()),
-            entry.fileName,
-          );
+          zipFile.openReadStream(entry, (err, readStream) => {
+            if (err) {
+              zipFile.close();
+              outputZip.end();
+              return reject(err);
+            }
 
-          zipFile.readEntry();
-        });
+            try {
+              outputZip.addReadStream(
+                readStream.pipe(sharp().jpeg()),
+                entry.fileName,
+              );
+
+              zipFile.readEntry();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        } catch (e) {
+          reject(e);
+        }
       });
 
       zipFile.once("end", function () {
