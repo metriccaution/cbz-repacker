@@ -1,0 +1,22 @@
+{
+  "name": "cbz-repacker",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "tsc"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@types/yauzl": "^2.10.3",
+    "@types/yazl": "^3.3.0",
+    "sharp": "^0.34.3",
+    "yauzl": "^3.2.0",
+    "yazl": "^3.3.1"
+  }
+}
