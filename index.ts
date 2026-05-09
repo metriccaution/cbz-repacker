@@ -1,6 +1,6 @@
 import { mkdir, readdir, lstat } from "node:fs/promises";
 import { resolve } from "node:path";
-import { repackage } from "./lib";
+import { repackage } from "./lib/repack";
 import { createReadStream, createWriteStream } from "node:fs";
 
 const sourceDir = Bun.argv[2];
