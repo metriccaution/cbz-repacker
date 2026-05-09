@@ -8,7 +8,7 @@ To install dependencies:
 bun install
 ```
 
-To run:
+To run, put your CBZ files to be converted into a directory, and then run:
 
 ```bash
 bun run index.ts ./untrusted/ ./cleaned/

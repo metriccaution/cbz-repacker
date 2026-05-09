@@ -1,25 +1,24 @@
-import { open } from "yauzl";
+import { fromBuffer } from "yauzl";
 import { ZipFile } from "yazl";
 import { pipeline } from "node:stream/promises";
-import { createWriteStream } from "node:fs";
 import sharp from "sharp";
+import type { Readable, Writable } from "node:stream";
+import { Buffer } from "node:buffer";
 
 /**
  * Repackage one CBZ file into a new, cleaned up one.
  */
 export async function repackage(
-  sourcePath: string,
-  targetPath: string,
+  sourcePath: Readable,
+  outputTo: Writable,
 ): Promise<void> {
   const outputZip = new ZipFile();
 
-  const zipPromise = pipeline(
-    outputZip.outputStream,
-    createWriteStream(targetPath),
-  );
+  const zipPromise = pipeline(outputZip.outputStream, outputTo);
+  const sourceData = await streamToBuffer(sourcePath);
 
   return new Promise(async (resolve, reject) => {
-    open(sourcePath, { lazyEntries: true }, (err, zipFile) => {
+    fromBuffer(sourceData, { lazyEntries: true }, (err, zipFile) => {
       if (err) {
         outputZip.end();
         return reject(err);
@@ -66,4 +65,14 @@ export async function repackage(
 
     await zipPromise;
   });
+}
+
+async function streamToBuffer(stream: Readable) {
+  const chunks = [];
+
+  for await (const chunk of stream) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
+  }
+
+  return Buffer.concat(chunks);
 }
