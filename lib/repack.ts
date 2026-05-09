@@ -2,8 +2,9 @@ import { fromBuffer } from "yauzl";
 import { ZipFile } from "yazl";
 import { pipeline } from "node:stream/promises";
 import sharp from "sharp";
-import type { Readable, Writable } from "node:stream";
+import { Readable, Writable } from "node:stream";
 import { Buffer } from "node:buffer";
+import { rewriteCbzFile } from "./comic-info";
 
 /**
  * Repackage one CBZ file into a new, cleaned up one.
@@ -16,6 +17,8 @@ export async function repackage(
 
   const zipPromise = pipeline(outputZip.outputStream, outputTo);
   const sourceData = await streamToBuffer(sourcePath);
+
+  let convertedMetadataFile = false;
 
   return new Promise(async (resolve, reject) => {
     fromBuffer(sourceData, { lazyEntries: true }, (err, zipFile) => {
@@ -31,11 +34,25 @@ export async function repackage(
             return;
           }
 
-          zipFile.openReadStream(entry, (err, readStream) => {
+          zipFile.openReadStream(entry, async (err, readStream) => {
             if (err) {
               zipFile.close();
               outputZip.end();
               return reject(err);
+            }
+
+            if (entry.fileName.endsWith("ComicInfo.xml")) {
+              if (!convertedMetadataFile) {
+                convertedMetadataFile = true;
+                const xml = new TextDecoder().decode(
+                  await streamToBuffer(readStream),
+                );
+                const normalisedXml = rewriteCbzFile(xml);
+                outputZip.addBuffer(Buffer.from(normalisedXml), entry.fileName);
+              }
+
+              zipFile.readEntry();
+              return;
             }
 
             try {
@@ -67,7 +84,7 @@ export async function repackage(
   });
 }
 
-async function streamToBuffer(stream: Readable) {
+async function streamToBuffer(stream: Readable): Promise<Buffer> {
   const chunks = [];
 
   for await (const chunk of stream) {

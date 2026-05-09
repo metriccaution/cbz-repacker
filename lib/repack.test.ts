@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { createReadStream, createWriteStream } from "node:fs";
-import { repackage } from "./lib";
+import { createReadStream } from "node:fs";
+import { repackage } from "./repack";
 import { Writable } from "node:stream";
 import { join } from "node:path";
 
@@ -27,6 +27,22 @@ describe("repackage", () => {
       repackage(
         createReadStream(
           join(import.meta.dirname, "test-data", "Test File.cbz"),
+        ),
+        stream,
+      ),
+    ).resolves.toEqual(undefined);
+
+    // Check for zip magic bytes
+    const outputData = getBuffer();
+    expect(outputData.subarray(0, 4)).toEqual(Buffer.from("504B0304", "hex"));
+  });
+
+  it("should succeed when parsing a valid file that includes metadata", async () => {
+    const { stream, getBuffer } = createBufferWritable();
+    await expect(
+      repackage(
+        createReadStream(
+          join(import.meta.dirname, "test-data", "Test File - Metadata.cbz"),
         ),
         stream,
       ),
