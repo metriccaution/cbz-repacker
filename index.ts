@@ -1,6 +1,7 @@
 import { mkdir, readdir, lstat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { repackage } from "./lib";
+import { createReadStream, createWriteStream } from "node:fs";
 
 const sourceDir = Bun.argv[2];
 const targetDir = Bun.argv[3];
@@ -25,5 +26,8 @@ for (const file of await readdir(sourceDir)) {
     continue;
   }
 
-  await repackage(filePath, resolve(targetDir, file));
+  await repackage(
+    createReadStream(filePath),
+    createWriteStream(resolve(targetDir, file)),
+  );
 }

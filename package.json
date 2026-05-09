@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "tsc"
+    "test": "tsc && bun test"
   },
   "devDependencies": {
     "@types/bun": "latest"
