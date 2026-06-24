@@ -5,7 +5,7 @@
     "": {
       "name": "cbz-repacker",
       "dependencies": {
-        "@types/yauzl": "^3.3.0",
+        "@types/yauzl": "^3.4.0",
         "@types/yazl": "^3.3.1",
         "sharp": "^0.35.1",
         "yauzl": "^3.4.0",
@@ -80,7 +80,7 @@
 
     "@types/node": ["@types/node@24.3.0", "", { "dependencies": { "undici-types": "~7.10.0" } }, "sha512-aPTXCrfwnDLj4VvXrm+UUCQjNEvJgNA8s5F1cvwQU+3KNltTOkBm1j30uNLyqqPNe7gE3KFzImYoZEfLhp4Yow=="],
 
-    "@types/yauzl": ["@types/yauzl@3.3.0", "", { "dependencies": { "@types/node": "*" } }, "sha512-7YJZZveDGYqCMt0PrN0sjZj9gT07xLqnHBimKwhWYTJ4lh5MxDGmaCaN4+6x1TOPt+dk3Ge8w9cO3uJXoy/qrA=="],
+    "@types/yauzl": ["@types/yauzl@3.4.0", "", { "dependencies": { "@types/node": "*" } }, "sha512-NRPn5w6h8dhcnmx3YIRQcqMywY/+nND/uOkJessedcrowO3C0AssHp3tMJpxKAwOhFOo0OV1y9VtsC5hbKKBAw=="],
 
     "@types/yazl": ["@types/yazl@3.3.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-DIWfCKpsTp6hE5BDBHV3+fIL/bLUF9Bv13iDrWnMlmhQpH67buNvI291ZauQ1xcccxK3FqQ9honnXpq4R8NMuQ=="],
 
